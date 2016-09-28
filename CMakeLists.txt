@@ -1,6 +1,8 @@
 cmake_minimum_required (VERSION 2.8.11)
 project (travis_test)
 
+
+include(CheckCXXCompilerFlag)
 find_package(Threads REQUIRED)
 
 macro(add_flags target)
@@ -15,14 +17,19 @@ macro(add_flags target)
 endmacro()
 
 macro(add_version_target lang)
-  add_executable(version_info_${lang} version_info.cpp)
-  target_link_libraries(version_info_${lang} ${CMAKE_THREAD_LIBS_INIT})
-  add_flags(version_info_${lang} -std=c++${lang})
-  add_custom_target(print_version_info_${lang} ALL
-          COMMAND version_info_${lang}
-          WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-          COMMENT "Run and print the version information for C++${lang}"
-          SOURCES version_info.cpp)
+  check_cxx_compiler_flag("-std=c++${lang}" HAS_CXX_${lang}_FLAG)
+  if (${HAS_CXX_${lang}_FLAG})
+    add_executable(version_info_${lang} version_info.cpp)
+    target_link_libraries(version_info_${lang} ${CMAKE_THREAD_LIBS_INIT})
+    add_flags(version_info_${lang} -std=c++${lang})
+    add_custom_target(print_version_info_${lang} ALL
+            COMMAND version_info_${lang}
+            WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+            COMMENT "Run and print the version information for C++${lang}"
+            SOURCES version_info.cpp)
+  else()
+    message(STATUS "C++${lang} is not supported by this compiler")
+  endif()
 endmacro()
 
 add_version_target(98)
