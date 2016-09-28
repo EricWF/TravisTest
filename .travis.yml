@@ -39,10 +39,13 @@ matrix:
         - compiler: clang
           addons:
             apt:
+              sources:
+                ubuntu-toolchain-r-test
               packages:
-                clang-3.8
+                - clang-3.8
+                - g++-6
           env:
-            - COMPILER=clang++-3.8 C_COMPILER=clang-3.8
+            - COMPILER=clang++-3.8 C_COMPILER=clang-3.8 NEW_LIBSTDCXX=1
         - compiler: clang
           addons:
             apt:
@@ -53,14 +56,14 @@ matrix:
             - COMPILER=clang++-3.8 C_COMPILER=clang-3.8 EXTRA_FLAGS='-stdlib=libc++'
 
 before_script:
-    - if [ -n "${LIBCXX_BUILD}" ]; then
-        source .travis-libcxx-setup.sh;
-      fi
     - if [ -n "${NEW_LIBSTDCXX}" ]; then
         sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-6 60;
         sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-6 60;
         sudo update-alternatives --config gcc;
         sudo update-alternatives --config g++;
+      fi
+    - if [ -n "${LIBCXX_BUILD}" ]; then
+        source .travis-libcxx-setup.sh;
       fi
     - mkdir build && cd build
 
