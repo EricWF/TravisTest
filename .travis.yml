@@ -59,8 +59,8 @@ before_script:
     - if [ -n "${NEW_LIBSTDCXX}" ]; then
         sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-6 60;
         sudo update-alternatives --install /usr/bin/g++ /usr/bin/g++-6 60;
-        sudo update-alternatives --config gcc
-        sudo update-alternatives --config g++
+        sudo update-alternatives --config gcc;
+        sudo update-alternatives --config g++;
       fi
     - mkdir build && cd build
 
