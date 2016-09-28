@@ -23,6 +23,12 @@ matrix:
             - COMPILER=g++-6 C_COMPILER=gcc-6
         - compiler: clang
           env: COMPILER=clang++ C_COMPILER=clang
+        - compiler: clang
+          addons:
+            apt:
+              packages:
+                libc++-dev
+          env: COMPILER=clang++ C_COMPILER=clang EXTRA_FLAGS='-stdlib=libc++'
         # Clang w/ libc++
         - compiler: clang
           addons:
@@ -40,7 +46,7 @@ before_script:
     - mkdir build && cd build
 
 script:
-    - cmake -DCMAKE_C_COMPILER=${C_COMPILER} -DCMAKE_CXX_COMPILER=${COMPILER}" ..
+    - cmake -DCMAKE_C_COMPILER=${C_COMPILER} -DCMAKE_CXX_COMPILER=${COMPILER} -DCMAKE_CXX_FLAGS=${EXTRA_FLAGS}" ..
     - make
 
 sudo: required
